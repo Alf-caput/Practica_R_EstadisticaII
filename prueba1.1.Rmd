@@ -1,0 +1,89 @@
+---
+title: "prueba_20_03_2023"
+author: "Rubén Sierra Serrano"
+date: "2023-03-20"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Creación y descripción de la base de datos.
+
+El primer paso para trabajar sobre una base de datos es, conocerla, es decir, conocer el contenido de la base de datos y, además, ser capaces de clasificar las diferentes variables en función de su clase o, lo que es lo mismo, saber distinguir las variables continuas de las discretas (categóricas).
+
+Otro punto interesante es el de crear nuevas variables dependiendo de los resultados que estamos buscando según nuestros intereses.
+
+Leemos a continuación la base de datos:
+
+```{r}
+data <- read.csv('healthcare-dataset-stroke-data.csv', sep = ',')
+head(data)
+# dim(data)
+```
+Encontramos una base de datos que consta de 5110 observaciones y de 12 variables.
+
+Algunas de estas variables sirven para identificar a cada una de las personas que se ha hecho seguimiento, como son la edad o el género. Otras, sin embargo, hacen referencia a temas de salud, como el nivel de glucosa o el índice de masa corporal.
+
+Entendemos que es interesante, para este estudio, comprobar qué factores pueden afectar en la posibilidad de tener o no un infarto, por tanto, tenemos que elegir esta última como variable objetivo.
+
+Por último, encontramos variables que hacen referencia al estado de salud de los pacientes.
+
+Breve descripción de las variables encontradas en la base de datos:
+
+id: es un identificador de los pacientes sobre los que se está realizando el estudio.
+gender: hace referencia al sexo de los pacientes.
+age: representa la edad, en años, de los pacientes.
+hypertension: variable binaria que representa si el paciente tiene hipertensión (1) o no (0).
+heart_disease: indica si el paciente ha tenido previamente problemas cardiacos.
+ever_married: indica si el paciente se ha casado o no.
+work_type: tipo de trabajo, clasificado de la siguiente forma: Govt_job (funcionario), Private (trabajador del sector privado), Self-employed (autónomo), Never_worked (sin ningún tipo de experiencia laboral) y children (niño y, por tanto, sin experiencia laboral).
+residence_type: localización geográfica de la residencia en la que habita el paciente, puede ser rural (área rural) o urban (área urbana).
+avg_glucose_level: nivel de glucosa media del paciente medida en mg/dL
+bmi: índice de masa corporal del paciente
+smoking_status: hábito de consumo de tabaco del paciente, clasificado de la siguiente forma: smokes (fumador actual), formerly smoked (fumador en el pasado) y never smoked (nunca ha fumado)
+stroke: variable binaria que indica si el paciente ha tenido un ataque cardiaco (1) o no (0).
+
+Vamos a eliminar la variable id ya que se trata de un identificador empleado para diferenciar a los pacientes:
+```{r}
+df <- data[,-c(1,4,5)]
+df
+```
+
+## Limpieza de la base de datos - estadística descriptiva
+
+Una vez hemos definido las variables y sabemos lo que significan, tenemos que depurar la base de datos para poder trabajar con ella.
+
+En primer lugar, miramos si hay NA entre las observaciones (datos en blanco, sin valor).
+```{r}
+library(inspectdf);
+show_plot(inspect_na(df))
+```
+De las variables que hemos elegido el índice de masa corportal (bmi) tiene 3.9% de variables que son NA, por tanto, eliminaremos esas observaciones.
+```{r}
+df <- na.omit(df)
+show_plot(inspect_na(df))
+```
+
+
+Lo siguiente que debemos realizar es un estudio de la naturaleza de las variables, es decir, asignar el tipo factor a aquellas que consideremos categóricas y comprobar que las numéricas estén bien identificadas:
+```{r}
+show_plot(inspect_types(df))
+```
+Tenemos 5 variables de tipo char que pasaremos a factor. Además, debemos pasar a factor las variables que representan categorías aún siendo variables numéricas, en nuestro caso la variable stroke que indica si el paciente ha tenido un ataque cardiaco (1) o no (0).
+```{r}
+df[,c(1, 3, 4, 5, 8, 9)] <- lapply(df[,c(1, 3, 4, 5, 8, 9)], factor)
+summary(df)
+```
+
+Observamos que hay 3 variables continuas, de las que posteriormente estudiaremos las distribuciones y se tomarán las decisiones oportunas:
+• age: Edad de cada individuo.
+• avg_glucose_level: Nivel de glugosa promedio de cada individuo
+• bmi: Índice de masa corporal de cada individuo
+Observamos que la variable edad puede tomar valores no enteros, por simplicidad convertiremos la edad a valores enteros.
+```{r}
+df[,c(2)] <- lapply(df[,c(2)], round)
+df
+```
+
