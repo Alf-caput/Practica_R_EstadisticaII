@@ -90,3 +90,11 @@ df[2]<-lapply(df[2],function(x) round(x*12))
 colnames(df)[2]  <- "months"  
 summary(df)
 ```
+
+Como podemos observar en el summary, la media del IMC dista mucho del valor máximo, por tanto, podemos concluir que tiene valores outliners.
+
+Lo primero que tenemos que hacer para eliminar los outliners es graficar las funciones numéricas para observa cuánto se aleja la cola del resto de la función:
+```{r}
+show_plot(inspect_num(df))
+```
+
