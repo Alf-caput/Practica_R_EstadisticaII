@@ -32,18 +32,20 @@ Por último, encontramos variables que hacen referencia al estado de salud de lo
 
 Breve descripción de las variables encontradas en la base de datos:
 
-id: es un identificador de los pacientes sobre los que se está realizando el estudio.
-gender: hace referencia al sexo de los pacientes.
-age: representa la edad, en años, de los pacientes.
-hypertension: variable binaria que representa si el paciente tiene hipertensión (1) o no (0).
-heart_disease: indica si el paciente ha tenido previamente problemas cardiacos.
-ever_married: indica si el paciente se ha casado o no.
-work_type: tipo de trabajo, clasificado de la siguiente forma: Govt_job (funcionario), Private (trabajador del sector privado), Self-employed (autónomo), Never_worked (sin ningún tipo de experiencia laboral) y children (niño y, por tanto, sin experiencia laboral).
+\begin{itemize}
+\item \textbf {id:} es un identificador de los pacientes sobre los que se está realizando el estudio.
+\item \textbf {gender:} hace referencia al sexo de los pacientes.
+\item \textbf {age:} representa la edad, en años, de los pacientes.
+\item \textbf {hypertension:} variable binaria que representa si el paciente tiene hipertensión (1) o no (0).
+\item \textbf {heart_disease:} indica si el paciente ha tenido previamente problemas cardiacos.
+\item \textbf {ever_married:} indica si el paciente se ha casado o no.
+\item \textbf {work_type:} tipo de trabajo, clasificado de la siguiente forma: Govt_job (funcionario), Private (trabajador del sector privado), Self-employed (autónomo), Never_worked (sin ningún tipo de experiencia laboral) y children (niño y, por tanto, sin experiencia laboral).
 residence_type: localización geográfica de la residencia en la que habita el paciente, puede ser rural (área rural) o urban (área urbana).
-avg_glucose_level: nivel de glucosa media del paciente medida en mg/dL
-bmi: índice de masa corporal del paciente
-smoking_status: hábito de consumo de tabaco del paciente, clasificado de la siguiente forma: smokes (fumador actual), formerly smoked (fumador en el pasado) y never smoked (nunca ha fumado)
-stroke: variable binaria que indica si el paciente ha tenido un ataque cardiaco (1) o no (0).
+\item \textbf {avg_glucose_level:} nivel de glucosa media del paciente medida en mg/dL
+\item \textbf {bmi:} índice de masa corporal del paciente
+\item \textbf {smoking_status:} hábito de consumo de tabaco del paciente, clasificado de la siguiente forma: smokes (fumador actual), formerly smoked (fumador en el pasado) y never smoked (nunca ha fumado)
+\item \textbf {stroke:} variable binaria que indica si el paciente ha tenido un ataque cardiaco (1) o no (0).
+\end{itemize}
 
 Vamos a eliminar la variable id ya que se trata de un identificador empleado para diferenciar a los pacientes:
 ```{r}
@@ -83,7 +85,7 @@ Observamos que hay 3 variables continuas, de las que posteriormente estudiaremos
 • bmi: Índice de masa corporal de cada individuo
 Observamos que la variable edad puede tomar valores no enteros, por simplicidad convertiremos la edad a valores enteros.
 ```{r}
-df[,c(2)] <- lapply(df[,c(2)], round)
+df <- data.frame(lapply(df, function(x) if(is.numeric(x)) round(x) else x))
 df
 ```
 
