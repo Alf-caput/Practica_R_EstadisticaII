@@ -83,9 +83,10 @@ Observamos que hay 3 variables continuas, de las que posteriormente estudiaremos
 • age: Edad de cada individuo.
 • avg_glucose_level: Nivel de glugosa promedio de cada individuo
 • bmi: Índice de masa corporal de cada individuo
+
 Observamos que la variable edad puede tomar valores no enteros, por simplicidad convertiremos la edad a valores enteros.
 ```{r}
-df <- data.frame(lapply(df, function(x) if(is.numeric(x)) round(x) else x))
-df
+df[2]<-lapply(df[2],function(x) round(x*12))
+colnames(df)[2]  <- "months"  
+summary(df)
 ```
-
