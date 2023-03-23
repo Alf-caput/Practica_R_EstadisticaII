@@ -150,16 +150,17 @@ Ahora que conocemos la base de datos y la hemos depurado, vamos a empezar a saca
 ```{r}
 boxplot(bmi ~ smoking_status, data = df, ylab = "IMC", xlab = "Tabaquismo")
 ```
-También podría ser interesante mirar la influencia entre los problemas cardiacos y los infartos al corazón y el IMC:
+También podría ser interesante mirar la influencia entre los problemas cardiacos, los infartos al corazón y el sexo y el IMC:
 ```{r}
 boxplot(bmi ~ heart_disease, data = df, ylab = "IMC", xlab = "Cardiopatías", names = c("No", "Sí"))
 boxplot(bmi ~ stroke, data = df, ylab = "IMC", xlab = "Infartos al corazón", names = c("No", "Sí"))
+boxplot(bmi  ~  gender, data = df, ylab = "IMC", xlab = "Sexo", names = c("Mujeres", "Hombres") )
 ```
 Vamos a comprobar, de forma gráfica, si el sexo puede afectar a la hipertensión, los ataques cardiacos y las cardiopatías. De esta forma, en el futuro, podremos realizar más comprobaciones de forma analítica. 
 ```{r}
-spineplot(table(df$hypertension,df$gender))
-spineplot(table(df$stroke,df$gender))
-spineplot(table(df$heart_disease,df$gender))
+spineplot(table(df$hypertension,df$gender), xaxlabels = c("Sin hipertensión", "Con hipertensión"))
+spineplot(table(df$stroke,df$gender), xaxlabels = c("No ataque cardiaco", "Ataque cardiaco"))
+spineplot(table(df$heart_disease,df$gender), xaxlabels = c("Sin cardiopatías", "Con cardiopatías"))
 ```
 # Intervalo de confianza
 En este apartado crearemos un intervalo de confianza para el IMC. 
@@ -182,3 +183,29 @@ conf <- t.test(x =  df$bmi,                   # Muestra 1
 
 conf$conf.int
 ```
+
+# Contraste de hipótesis
+Hemos visto de forma gráfica, que el género no afectaba al IMC pero a las cardiopatías sí podía influir. 
+
+Crearemos un primer contraste de forma analítica para comprobar que la media de IMC entre hombres y mujeres es  igual. Es decir, queremos plantear el siguiente contraste de hipótesis:
+
+$$ \left\{ \begin{array}{lc}
+             H_{0}: & \mu_{hombres} = \mu_{mujeres} \\
+             H_{1}: & \mu_{hombres} \neq \mu_{mujeres}
+             \end{array}
+\right. $$
+
+```{r}
+# Contraste para la diferencia de medias
+hombres <- df[df$gender == 'Male', 'bmi']
+mujeres <- df[df$gender == 'Female', 'bmi']
+
+t.test(x = hombres,                   # Muestra 1
+       y = mujeres,                   # Muestra 2
+       alternative = c("two.sided"),  # Signo hipótesis alternativa
+       paired = FALSE,                # Variables dependientes
+       var.equal = FALSE,             # Varianzas iguales
+       conf.level = 0.95)             # Nivel de confianza (1-nivel significación)
+
+```
+
