@@ -25,11 +25,11 @@ head(data)
 
 Encontramos una base de datos que consta de 5110 observaciones y de 12 variables.
 
-Algunas de estas variables sirven para identificar a cada una de las personas que se ha hecho seguimiento, como son la edad o el género. Otras, sin embargo, hacen referencia a temas de salud, como el nivel de glucosa o el índice de masa corporal.
+Algunas de estas variables sirven para identificar a cada una de las personas que se ha hecho seguimiento, como son la edad o el género. Otras, sin embargo, hacen referencia a temas de salud, como el nivel de glucosa, el índice de masa corporal o si tienen o han tenido problemas cardiovasculares.
 
-Entendemos que es interesante, para este estudio, comprobar qué factores pueden afectar en la posibilidad de tener o no un infarto, por tanto, tenemos que elegir esta última como variable objetivo.
+Entendemos que es interesante, para este estudio, comprobar qué factores pueden influir sobre el índice de masa corporal (BMI en inglés), tomamos esta como nuestra variable objetivo.
 
-Por último, encontramos variables que hacen referencia al estado de salud de los pacientes.
+Por último, encontramos variables que hacen referencia a hábitos de personas, como pueden ser el tipo de trabajo y con que regularidad fuman.
 
 Breve descripción de las variables encontradas en la base de datos:
 
