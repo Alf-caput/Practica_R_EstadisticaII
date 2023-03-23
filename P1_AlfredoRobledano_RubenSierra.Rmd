@@ -157,7 +157,28 @@ boxplot(bmi ~ stroke, data = df, ylab = "IMC", xlab = "Infartos al corazón", na
 ```
 Vamos a comprobar, de forma gráfica, si el sexo puede afectar a la hipertensión, los ataques cardiacos y las cardiopatías. De esta forma, en el futuro, podremos realizar más comprobaciones de forma analítica. 
 ```{r}
-spineplot(table(df$hypertension,df$gender),xaxlabels="Hipertensión")
-spineplot(table(df$stroke,df$gender),xaxlabels = "Ataques cardiacos")
-spineplot(table(df$heart_disease,df$gender),xaxlabels="Cardiopatías")
+spineplot(table(df$hypertension,df$gender))
+spineplot(table(df$stroke,df$gender))
+spineplot(table(df$heart_disease,df$gender))
+```
+# Intervalo de confianza
+En este apartado crearemos un intervalo de confianza para el IMC. 
+Hemos visto anteriormente el estimador puntual para este valor, aproximadamente 
+el 29.7%, pero vamos a crear un intervalo de confianza para este valor y poder estimar 
+cuánto valdría este valor en la población. 
+
+Queremos hacer el intervalo de confianza para el IMC \textbf{media}.
+```{r}
+# Intervalo para la media 
+
+conf <- t.test(x =  df$bmi,                   # Muestra 1
+               y = NULL,                      # Muestra 2
+               alternative = c("two.sided"),  # Tipo de intervalo
+               paired = FALSE,                # Variables dependientes
+               var.equal = FALSE,             # Varianzas iguales
+               conf.level = 0.95)             # Nivel de confianza (1-nivel significación)
+
+# Muestro el resultado del intervalo
+
+conf$conf.int
 ```
