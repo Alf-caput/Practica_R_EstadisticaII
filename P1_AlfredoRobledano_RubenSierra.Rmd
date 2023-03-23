@@ -152,8 +152,8 @@ boxplot(bmi ~ smoking_status, data = df, ylab = "IMC", xlab = "Tabaquismo")
 ```
 También podría ser interesante mirar la influencia entre los problemas cardiacos y los infartos al corazón y el IMC:
 ```{r}
-boxplot(bmi ~ heart_disease, data = df, ylab = "IMC", xlab = "Cardiopatías")
-boxplot(bmi ~ stroke, data = df, ylab = "IMC", xlab = "Infartos al corazón")
+boxplot(bmi ~ heart_disease, data = df, ylab = "IMC", xlab = "Cardiopatías", names = c("No", "Sí"))
+boxplot(bmi ~ stroke, data = df, ylab = "IMC", xlab = "Infartos al corazón", names = c("No", "Sí"))
 ```
 Vamos a comprobar, de forma gráfica, si el sexo puede afectar a la hipertensión, los ataques cardiacos y las cardiopatías. De esta forma, en el futuro, podremos realizar más comprobaciones de forma analítica. 
 ```{r}
