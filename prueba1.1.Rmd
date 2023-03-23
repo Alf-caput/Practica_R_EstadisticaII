@@ -22,6 +22,7 @@ data <- read.csv('healthcare-dataset-stroke-data.csv', sep = ',')
 head(data)
 # dim(data)
 ```
+
 Encontramos una base de datos que consta de 5110 observaciones y de 12 variables.
 
 Algunas de estas variables sirven para identificar a cada una de las personas que se ha hecho seguimiento, como son la edad o el género. Otras, sin embargo, hacen referencia a temas de salud, como el nivel de glucosa o el índice de masa corporal.
@@ -32,6 +33,7 @@ Por último, encontramos variables que hacen referencia al estado de salud de lo
 
 Breve descripción de las variables encontradas en la base de datos:
 
+```{=tex}
 \begin{itemize}
 \item \textbf {id:} es un identificador de los pacientes sobre los que se está realizando el estudio.
 \item \textbf {gender:} hace referencia al sexo de los pacientes.
@@ -46,57 +48,72 @@ residence_type: localización geográfica de la residencia en la que habita el p
 \item \textbf {smoking_status:} hábito de consumo de tabaco del paciente, clasificado de la siguiente forma: smokes (fumador actual), formerly smoked (fumador en el pasado) y never smoked (nunca ha fumado)
 \item \textbf {stroke:} variable binaria que indica si el paciente ha tenido un ataque cardiaco (1) o no (0).
 \end{itemize}
-
+```
 Vamos a eliminar la variable id ya que se trata de un identificador empleado para diferenciar a los pacientes:
+
 ```{r}
 df <- data[,-c(1,4,5)]
-df
 ```
 
 ## Limpieza de la base de datos - estadística descriptiva
 
 Una vez hemos definido las variables y sabemos lo que significan, tenemos que depurar la base de datos para poder trabajar con ella.
 
-En primer lugar, miramos si hay NA entre las observaciones (datos en blanco, sin valor).
+Primero de todo, podemos observar que en la columna smoking_status, la variable puede adoptar el valor Unknown, para que R lo detecte como NA, debemos de cambiarlo:
+
+```{r}
+df$smoking_status <- ifelse(df$smoking_status == "Unknown", NA, df$smoking_status)
+```
+
+Lo mismo hacemos con la columna gender, ya que hay una obsevación con la que adopta el valor Other:
+
+```{r}
+df$gender <- ifelse(df$gender == "Other", NA, df$gender)
+```
+
+A continuación, miramos si hay NA entre las observaciones (datos en blanco, sin valor):
+
 ```{r}
 library(inspectdf);
 show_plot(inspect_na(df))
 ```
+
 De las variables que hemos elegido el índice de masa corportal (bmi) tiene 3.9% de variables que son NA, por tanto, eliminaremos esas observaciones.
+
 ```{r}
 df <- na.omit(df)
 show_plot(inspect_na(df))
 ```
 
-
 Lo siguiente que debemos realizar es un estudio de la naturaleza de las variables, es decir, asignar el tipo factor a aquellas que consideremos categóricas y comprobar que las numéricas estén bien identificadas:
+
 ```{r}
 show_plot(inspect_types(df))
 ```
+
 Tenemos 5 variables de tipo char que pasaremos a factor. Además, debemos pasar a factor las variables que representan categorías aún siendo variables numéricas, en nuestro caso la variable stroke que indica si el paciente ha tenido un ataque cardiaco (1) o no (0).
+
 ```{r}
 df[,c(1, 3, 4, 5, 8, 9)] <- lapply(df[,c(1, 3, 4, 5, 8, 9)], factor)
 summary(df)
 ```
 
-Observamos que hay 3 variables continuas, de las que posteriormente estudiaremos las distribuciones y se tomarán las decisiones oportunas:
-• age: Edad de cada individuo.
-• avg_glucose_level: Nivel de glugosa promedio de cada individuo
-• bmi: Índice de masa corporal de cada individuo
+Observamos que hay 3 variables continuas, de las que posteriormente estudiaremos las distribuciones y se tomarán las decisiones oportunas: • age: Edad de cada individuo. • avg_glucose_level: Nivel de glugosa promedio de cada individuo • bmi: Índice de masa corporal de cada individuo
 
 Nos podemos percatar que la variable edad puede tomar valores no enteros, por simplicidad convertiremos la edad a valores enteros.
+
 ```{r}
 df[2]<-lapply(df[2],function(x) round(x*12))
 colnames(df)[2]  <- "months"  
 summary(df)
 ```
 
-
 Analizando el summary, la media y el tercer cuartil del IMC y de los niveles de glucosa distan mucho de sus valores máximos, por tanto, podemos concluir que tiene valores outliners.
 
 Lo primero que tenemos que hacer para eliminar los outliners es graficar las funciones numéricas para observa cuánto se aleja la cola del resto de la función:
+
 ```{r}
 show_plot(inspect_num(df))
 ```
 
-<
+\<
