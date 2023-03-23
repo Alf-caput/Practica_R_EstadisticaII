@@ -51,7 +51,7 @@ residence_type: localización geográfica de la residencia en la que habita el p
 Vamos a eliminar la variable id ya que se trata de un identificador empleado para diferenciar a los pacientes:
 
 ```{r}
-df <- data[,-c(1,4,5)]
+df <- data[,-c(1)]
 ```
 
 ## Limpieza de la base de datos - estadística descriptiva
@@ -93,10 +93,10 @@ Lo siguiente que debemos realizar es un estudio de la naturaleza de las variable
 show_plot(inspect_types(df))
 ```
 
-Tenemos 5 variables de tipo char que pasaremos a factor. Además, debemos pasar a factor las variables que representan categorías aún siendo variables numéricas, en nuestro caso la variable stroke que indica si el paciente ha tenido un ataque cardiaco (1) o no (0).
+Tenemos 5 variables de tipo char que pasaremos a factor. Además, debemos pasar a factor las variables que representan categorías aún siendo variables numéricas, en nuestro caso las variable hypertension, heart_disease y stroke.
 
 ```{r}
-df[,c(1, 3, 4, 5, 8, 9)] <- lapply(df[,c(1, 3, 4, 5, 8, 9)], factor)
+df[,c(1, 3, 4, 5, 6, 7, 10, 11)] <- lapply(df[,c(1, 3, 4, 5, 6, 7, 10, 11)], factor)
 summary(df)
 ```
 
@@ -104,8 +104,17 @@ Observamos que hay 3 variables continuas, de las que posteriormente estudiaremos
 • age: Edad de cada individuo. 
 • avg_glucose_level: Nivel de glugosa promedio de cada individuo 
 • bmi: Índice de masa corporal de cada individuo
+En contraposición, hay 5 variables discretas: 
+• gender: Sexo de los pacientes.
+• hypertension: Determina si los pacientes tienen hipertensión.
+• heart_disease: Determina si los pacientes han tenido problemas cardiacos.
+• work_type: Tipo de trabajo que ejerce el paciente. 
+• ever_married: Determina si los pacientes se han casado. 
+• Residence_type: Lugar de residencia de los pacientes.
+• smoking_status: Nivel de tabaquismo de los pacientes.
+• stroke: Determina si el paciente ha tenido previamente infartos.
 
-Nos podemos percatar que la variable edad puede tomar valores no enteros, por simplicidad convertiremos la edad a valores enteros.
+Nos podemos percatar que la variable edad puede tomar valores no enteros, por simplicidad convertiremos la edad a valores enteros y trabajaremos en meses porque parte de la muestra son bebés.
 
 ```{r}
 df[2]<-lapply(df[2],function(x) round(x*12))
@@ -118,6 +127,7 @@ Analizando el summary, la media y el tercer cuartil del IMC y de los niveles de 
 Lo primero que tenemos que hacer para eliminar los outliners es graficar las funciones numéricas para observa cuánto se aleja la cola del resto de la función:
 
 ```{r}
+library(inspectdf);
 show_plot(inspect_num(df))
 ```
 
@@ -132,4 +142,22 @@ En los niveles de glucosa, los outliners son los valores que se escapan por las 
 ```{r}
 df <- subset(df, avg_glucose_level< 225)
 summary(df)
+```
+
+# Análisis a priori - influencia de las variables. 
+
+Ahora que conocemos la base de datos y la hemos depurado, vamos a empezar a sacar algunas conclusiones. Por ejemplo, nos podría interesar comprobar si el índice de masa corporal viene influido por el tabaquismo:
+```{r}
+boxplot(bmi ~ smoking_status, data = df, ylab = "IMC", xlab = "Tabaquismo")
+```
+También podría ser interesante mirar la influencia entre los problemas cardiacos y los infartos al corazón y el IMC:
+```{r}
+boxplot(bmi ~ heart_disease, data = df, ylab = "IMC", xlab = "Cardiopatías")
+boxplot(bmi ~ stroke, data = df, ylab = "IMC", xlab = "Infartos al corazón")
+```
+Vamos a comprobar, de forma gráfica, si el sexo puede afectar a la hipertensión, los ataques cardiacos y las cardiopatías. De esta forma, en el futuro, podremos realizar más comprobaciones de forma analítica. 
+```{r}
+spineplot(table(df$hypertension,df$gender),xaxlabels="Hipertensión")
+spineplot(table(df$stroke,df$gender),xaxlabels = "Ataques cardiacos")
+spineplot(table(df$heart_disease,df$gender),xaxlabels="Cardiopatías")
 ```
