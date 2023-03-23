@@ -51,7 +51,7 @@ residence_type: localización geográfica de la residencia en la que habita el p
 Vamos a eliminar la variable id ya que se trata de un identificador empleado para diferenciar a los pacientes:
 
 ```{r}
-df <- data[,-c(1,4,5)]
+df <- data[,-c(1)]
 ```
 
 ## Limpieza de la base de datos - estadística descriptiva
@@ -93,10 +93,10 @@ Lo siguiente que debemos realizar es un estudio de la naturaleza de las variable
 show_plot(inspect_types(df))
 ```
 
-Tenemos 5 variables de tipo char que pasaremos a factor. Además, debemos pasar a factor las variables que representan categorías aún siendo variables numéricas, en nuestro caso la variable stroke que indica si el paciente ha tenido un ataque cardiaco (1) o no (0).
+Tenemos 5 variables de tipo char que pasaremos a factor. Además, debemos pasar a factor las variables que representan categorías aún siendo variables numéricas, en nuestro caso las variable hypertension, heart_disease y stroke.
 
 ```{r}
-df[,c(1, 3, 4, 5, 8, 9)] <- lapply(df[,c(1, 3, 4, 5, 8, 9)], factor)
+df[,c(1, 3, 4, 5, 6, 7, 10, 11)] <- lapply(df[,c(1, 3, 4, 5, 6, 7, 10, 11)], factor)
 summary(df)
 ```
 
@@ -104,8 +104,17 @@ Observamos que hay 3 variables continuas, de las que posteriormente estudiaremos
 • age: Edad de cada individuo. 
 • avg_glucose_level: Nivel de glugosa promedio de cada individuo 
 • bmi: Índice de masa corporal de cada individuo
+En contraposición, hay 5 variables discretas: 
+• gender: Sexo de los pacientes.
+• hypertension: Determina si los pacientes tienen hipertensión.
+• heart_disease: Determina si los pacientes han tenido problemas cardiacos.
+• work_type: Tipo de trabajo que ejerce el paciente. 
+• ever_married: Determina si los pacientes se han casado. 
+• Residence_type: Lugar de residencia de los pacientes.
+• smoking_status: Nivel de tabaquismo de los pacientes.
+• stroke: Determina si el paciente ha tenido previamente infartos.
 
-Nos podemos percatar que la variable edad puede tomar valores no enteros, por simplicidad convertiremos la edad a valores enteros.
+Nos podemos percatar que la variable edad puede tomar valores no enteros, por simplicidad convertiremos la edad a valores enteros y trabajaremos en meses porque parte de la muestra son bebés.
 
 ```{r}
 df[2]<-lapply(df[2],function(x) round(x*12))
@@ -133,3 +142,7 @@ En los niveles de glucosa, los outliners son los valores que se escapan por las 
 df <- subset(df, avg_glucose_level< 225)
 summary(df)
 ```
+
+# Análisis a priori - influencia de las variables. 
+
+Ahora que conocemos la base de datos y la hemos depurado, vamos a empezar a sacar algunas conclusiones. Por ejemplo, 
