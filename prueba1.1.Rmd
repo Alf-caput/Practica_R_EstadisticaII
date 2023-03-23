@@ -84,17 +84,19 @@ Observamos que hay 3 variables continuas, de las que posteriormente estudiaremos
 • avg_glucose_level: Nivel de glugosa promedio de cada individuo
 • bmi: Índice de masa corporal de cada individuo
 
-Observamos que la variable edad puede tomar valores no enteros, por simplicidad convertiremos la edad a valores enteros.
+Nos podemos percatar que la variable edad puede tomar valores no enteros, por simplicidad convertiremos la edad a valores enteros.
 ```{r}
 df[2]<-lapply(df[2],function(x) round(x*12))
 colnames(df)[2]  <- "months"  
 summary(df)
 ```
 
-Como podemos observar en el summary, la media del IMC dista mucho del valor máximo, por tanto, podemos concluir que tiene valores outliners.
+
+Analizando el summary, la media y el tercer cuartil del IMC y de los niveles de glucosa distan mucho de sus valores máximos, por tanto, podemos concluir que tiene valores outliners.
 
 Lo primero que tenemos que hacer para eliminar los outliners es graficar las funciones numéricas para observa cuánto se aleja la cola del resto de la función:
 ```{r}
 show_plot(inspect_num(df))
 ```
 
+<
