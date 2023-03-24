@@ -1,8 +1,11 @@
 ---
-title: "prueba_20_03_2023"
-author: "Rubén Sierra Serrano"
+title: "Prueba 1 - ANOVA"
+author: "Rubén Sierra Serrano y Alfredo Robledano Abasolo"
 date: "2023-03-20"
-output: pdf_document
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -39,11 +42,11 @@ Breve descripción de las variables encontradas en la base de datos:
 \item \textbf {hypertension:} variable binaria que representa si el paciente tiene hipertensión o no.
 \item \textbf {heart_disease:} indica si el paciente ha tenido previamente problemas cardiacos).
 \item \textbf {ever_married:} indica si el paciente se ha casado o no.
-\item \textbf {work_type:} tipo de trabajo, clasificado de la siguiente forma: Govt_job (funcionario), Private (trabajador del sector privado), Self-employed (autónomo), Never_worked (sin ningún tipo de experiencia laboral) y children (niño y, por tanto, sin experiencia laboral).
-residence_type: localización geográfica de la residencia en la que habita el paciente, puede ser rural (área rural) o urban (área urbana).
+\item \textbf {work_type:} tipo de trabajo, clasificado de la siguiente forma: Govt_job (funcionario), Private (trabajador del sector privado), Self-employed \item \textbf (autónomo), Never_worked (sin ningún tipo de experiencia laboral) y children (niño y, por tanto, sin experiencia laboral).
+\item \textbf {residence_type:} localización geográfica de la residencia en la que habita el paciente, puede ser rural (área rural) o urban (área urbana).
 \item \textbf {avg_glucose_level:} nivel de glucosa media del paciente medida en mg/dL
 \item \textbf {bmi:} índice de masa corporal del paciente
-\item \textbf {smoking_status:} hábito de consumo de tabaco del paciente, clasificado de la siguiente forma: smokes (fumador actual), formerly smoked (fumador en el pasado) y never smoked (nunca ha fumado)
+\item \textbf {smoking_status:} hábito de consumo de tabaco del paciente, clasificado de la siguiente forma: smokes (fumador actual), formerly smoked (fumador en \item \textbf el pasado) y never smoked (nunca ha fumado)
 \item \textbf {stroke:} variable binaria que indica si el paciente ha tenido un ataque cardiaco (1) o no (0).
 \end{itemize}
 
