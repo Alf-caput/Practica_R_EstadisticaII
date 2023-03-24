@@ -17,10 +17,9 @@ Otro punto interesante es el de crear nuevas variables dependiendo de los result
 
 Leemos a continuación la base de datos:
 
-```{r}
+```{r results='asis', echo=FALSE}
 data <- read.csv('healthcare-dataset-stroke-data.csv', sep = ',')
 head(data)
-# dim(data)
 ```
 
 Encontramos una base de datos que consta de 5110 observaciones y de 12 variables.
@@ -37,8 +36,8 @@ Breve descripción de las variables encontradas en la base de datos:
 \item \textbf {id:} es un identificador de los pacientes sobre los que se está realizando el estudio.
 \item \textbf {gender:} hace referencia al sexo de los pacientes.
 \item \textbf {age:} representa la edad, en años, de los pacientes.
-\item \textbf {hypertension:} variable binaria que representa si el paciente tiene hipertensión (1) o no (0).
-\item \textbf {heart_disease:} indica si el paciente ha tenido previamente problemas cardiacos.
+\item \textbf {hypertension:} variable binaria que representa si el paciente tiene hipertensión o no.
+\item \textbf {heart_disease:} indica si el paciente ha tenido previamente problemas cardiacos).
 \item \textbf {ever_married:} indica si el paciente se ha casado o no.
 \item \textbf {work_type:} tipo de trabajo, clasificado de la siguiente forma: Govt_job (funcionario), Private (trabajador del sector privado), Self-employed (autónomo), Never_worked (sin ningún tipo de experiencia laboral) y children (niño y, por tanto, sin experiencia laboral).
 residence_type: localización geográfica de la residencia en la que habita el paciente, puede ser rural (área rural) o urban (área urbana).
@@ -50,7 +49,7 @@ residence_type: localización geográfica de la residencia en la que habita el p
 
 Vamos a eliminar la variable id ya que se trata de un identificador empleado para diferenciar a los pacientes:
 
-```{r}
+```{r results='asis', echo=FALSE}
 df <- data[,-c(1)]
 ```
 
@@ -151,11 +150,12 @@ Ahora que conocemos la base de datos y la hemos depurado, vamos a empezar a saca
 ```{r}
 boxplot(bmi ~ smoking_status, data = df, ylab = "IMC", xlab = "Tabaquismo")
 ```
-También podría ser interesante mirar la influencia entre los problemas cardiacos, los infartos al corazón y el sexo y el IMC:
+También podría ser interesante mirar la influencia entre los problemas cardiacos, tener hipertensión, el sexo o si viven en el campo y el IMC:
 ```{r}
 boxplot(bmi ~ heart_disease, data = df, ylab = "IMC", xlab = "Cardiopatías", names = c("No", "Sí"))
-boxplot(bmi ~ stroke, data = df, ylab = "IMC", xlab = "Infartos al corazón", names = c("No", "Sí"))
+boxplot(bmi ~ hypertension, data = df, ylab = "IMC", xlab = "Hipertensión", names = c("No", "Sí"))
 boxplot(bmi  ~  gender, data = df, ylab = "IMC", xlab = "Sexo", names = c("Mujeres", "Hombres") )
+boxplot(bmi  ~  Residence_type, data = df, ylab = "IMC", xlab = "Residencia", names = c("Rural", "Urbana"))
 ```
 Vamos a comprobar, de forma gráfica, si el sexo puede afectar a la hipertensión, los ataques cardiacos y las cardiopatías. De esta forma, en el futuro, podremos realizar más comprobaciones de forma analítica. 
 ```{r}
@@ -186,61 +186,81 @@ conf$conf.int
 ```
 
 # Contraste de hipótesis
-Hemos visto de forma gráfica, que el género no afectaba al IMC pero a las cardiopatías sí podía influir. 
+Hemos visto de forma gráfica, que la residencia no afectaba al IMC pero tener hipertensión sí podía influir. 
 
-Crearemos un primer contraste de forma analítica para comprobar que la media de IMC entre hombres y mujeres es  igual. Es decir, queremos plantear el siguiente contraste de hipótesis:
+Crearemos un primer contraste de forma analítica para comprobar que la media de IMC entre los que viven en el campo y en la ciudad es  igual. Es decir, queremos plantear el siguiente contraste de hipótesis:
 
 $$ \left\{ \begin{array}{lc}
-             H_{0}: & \mu_{hombres} = \mu_{mujeres} \\
-             H_{1}: & \mu_{hombres} \neq \mu_{mujeres}
+             H_{0}: & \mu_{rural} = \mu_{urbano} \\
+             H_{1}: & \mu_{rural} \neq \mu_{urbano}
              \end{array}
 \right. $$
 
 ```{r}
 # Contraste para la diferencia de medias
-hombres <- df[df$gender == 'Male', 'bmi']
-mujeres <- df[df$gender == 'Female', 'bmi']
+rural <- df[df$Residence_type == 'Rural', 'bmi']
+urbano <- df[df$Residence_type == 'Urban', 'bmi']
 
-t.test(x = hombres,                   # Muestra 1
-       y = mujeres,                   # Muestra 2
+t.test(x = rural,                   # Muestra 1
+       y = urbano,                   # Muestra 2
        alternative = c("two.sided"),  # Signo hipótesis alternativa
        paired = FALSE,                # Variables dependientes
        var.equal = FALSE,             # Varianzas iguales
        conf.level = 0.95)             # Nivel de confianza (1-nivel significación)
+```
+Como el p-valor es mayor que el nivel de significación, podemos concluir que no
+hay evidencias suficientes para rechazar $H_{0}$ y por tanto no existen diferencias
+entre el IMC entre las personas que tienen residencia rural y residencia urbana. 
+
+Ahora vamos a comprobar qué pasa con las personas con hipertensión. Para ello, vamos a plantear
+la siguiente hipótesis, pues gráficamente es la que hemos visto que se cumple: 
+
+$$ \left\{ \begin{array}{lc}
+             H_{0}: & \mu_{hipertensión} \leq \mu_{no hipertensión} \\
+             H_{1}: & \mu_{hipertensión} > \mu_{no hipertensión}
+             \end{array}
+   \right. $$
+```{r}
+# Contraste para la diferencia de medias
+
+yes <- df[df$hypertension == 1, 'bmi']
+no <- df[df$hypertension == 0, 'bmi']
+
+t.test(x = yes,                       # Muestra 1
+       y = no,                        # Muestra 2
+       alternative = c("greater"),    # Signo hipótesis alternativa
+       paired = FALSE,                # Variables dependientes
+       var.equal = FALSE,             # Varianzas iguales
+       conf.level = 0.99)             # Nivel de confianza (1-nivel significación)
 
 ```
-
+El p-valor es pequeño, lo que quiere decir que nuestro estadístico de 
+diferencia de medias está en la región crítica, por lo que tenemos
+evidencias suficientes para rechazar la hipótesis nula y podemos concluir que 
+hay diferencia entre el IMC de personas con hipertensión y las que no tienen hipertensión, teniendo las personas con hipertensión un mayor IMC.
 #ANOVA
-Por último, vamos a comprobar si el consumo de alcohol es un factor significativo
-para la calidad del sueño. Gráficamente hemos visto que a medida que aumenta el
-consumo, la calidad es menor. 
+Por último, vamos a comprobar si el tabaquismo puede influir en el IMC. Gráficamente hemos visto que las personas que nunca han fumado suelen tener un IMC menor.
 
 Definimos el siguiente contraste:
 
 $$ \left\{ \begin{array}{lc}
-             H_{0}: & \mu_{c_{0}} = \mu_{c_{1}} = \mu_{c_{2}} =\mu_{c_{3}} = \mu_{c_{4-5}}\\
+             H_{0}: & \mu_{no fumador} = \mu_{exfumador} = \mu_{fumador}\\
              H_{1}: & Diferentes
              \end{array}
 \right. $$
 
 ```{r}
 # Aplicamos ANOVA
-anova_str <- aov(bmi ~ stroke, data = df)
+anova_str <- aov(bmi ~ smoking_status, data = df)
 summary(anova_str)
 ```
+Como resultado, obtenemos la tabla de ANOVA vista en clase, con la diferencia de
+encontrar el p-valor en lugar del valor teórico para la distribución de la F. 
 
-```{r}
-anova_hd <- aov(bmi ~ heart_disease, data = df)
-summary(anova_hd)
-```
-El criterio de rechazo es el mismo que tenemos en los contrastes de hipótesis, es decir, si el p-valor es mayor que el nivel de significación, rechazamos $H_{0}$.
+El criterio de rechazo es el mismo que tenemos en los contrastes de hipótesis, 
+es decir, si el p-valor es mayor que el nivel de significación, rechazamos $H_{0}$.
 
-En este caso tenemos un p-valor grande, bajo un nivel de significación 0,05,aceptamos $H_{0}$, es decir, hay evidencias suficientes para aceptar que las medias del IMC en los diferentes grupos según los infartos y las cardiopatías sean iguales. Podemos concluir que estas medias son diferentes y por tanto, el IMC no es un factor influyente en los infartos y en las cardiopatías. 
-
-```{r}
-# Aplicamos ANOVA
-anova_gl <- aov(bmi ~ avg_glucose_level, data = df)
-summary(anova_gl)
-```
-
-En este caso tenemos un p-valor muy pequeño, bajo un nivel de significación 0,05, rechazamos $H_{0}$, es decir, no hay evidencias suficientes para aceptar que las  medias del IMC en los diferentes grupos según los niveles de glucosa sean iguales. Podemos concluir que estas medias son diferentes y por tanto, el nivel de glucosa sí es un factor influyente en IMC.
+En este caso tenemos un p-valor muy pequeño, bajo un nivel de significación 0.05, 
+rechazamos $H_{0}$, es decir, no hay evidencias suficientes para aceptar que las 
+medias de IMC en los diferentes grupos según si la persona nunca ha fumado, es exfumador o fuma actualmente
+sean iguales. Podemos concluir que estas medias son diferentes y por tanto, el tabaquismo sí es un factor influyente en el IMC.
