@@ -32,24 +32,17 @@ Algunas de estas variables sirven para identificar a cada una de las personas qu
 Entendemos que es interesante, para este estudio, comprobar qué factores pueden influir sobre el índice de masa corporal (BMI en inglés), tomamos esta como nuestra variable objetivo.
 
 Por último, encontramos variables que hacen referencia a hábitos de personas, como pueden ser el tipo de trabajo y con que regularidad fuman.
-
-Breve descripción de las variables encontradas en la base de datos:
-
-\begin{itemize}
-\item \textbf {id:} es un identificador de los pacientes sobre los que se está realizando el estudio.
-\item \textbf {gender:} hace referencia al sexo de los pacientes.
-\item \textbf {age:} representa la edad, en años, de los pacientes.
-\item \textbf {hypertension:} variable binaria que representa si el paciente tiene hipertensión o no.
-\item \textbf {heart_disease:} indica si el paciente ha tenido previamente problemas cardiacos).
-\item \textbf {ever_married:} indica si el paciente se ha casado o no.
-\item \textbf {work_type:} tipo de trabajo, clasificado de la siguiente forma: Govt_job (funcionario), Private (trabajador del sector privado), Self-employed \item \textbf (autónomo), Never_worked (sin ningún tipo de experiencia laboral) y children (niño y, por tanto, sin experiencia laboral).
-\item \textbf {residence_type:} localización geográfica de la residencia en la que habita el paciente, puede ser rural (área rural) o urban (área urbana).
-\item \textbf {avg_glucose_level:} nivel de glucosa media del paciente medida en mg/dL
-\item \textbf {bmi:} índice de masa corporal del paciente
-\item \textbf {smoking_status:} hábito de consumo de tabaco del paciente, clasificado de la siguiente forma: smokes (fumador actual), formerly smoked (fumador en \item \textbf el pasado) y never smoked (nunca ha fumado)
-\item \textbf {stroke:} variable binaria que indica si el paciente ha tenido un ataque cardiaco (1) o no (0).
-\end{itemize}
-
+• age: Edad de cada individuo. 
+• avg_glucose_level: Nivel de glugosa promedio de cada individuo 
+• bmi: Índice de masa corporal de cada individuo
+• gender: Sexo de los pacientes.
+• hypertension: Determina si los pacientes tienen hipertensión.
+• heart_disease: Determina si los pacientes han tenido problemas cardiacos.
+• work_type: Tipo de trabajo que ejerce el paciente. 
+• ever_married: Determina si los pacientes se han casado. 
+• Residence_type: Lugar de residencia de los pacientes.
+• smoking_status: Nivel de tabaquismo de los pacientes.
+• stroke: Determina si el paciente ha tenido previamente infartos.
 Vamos a eliminar la variable id ya que se trata de un identificador empleado para diferenciar a los pacientes:
 
 ```{r results='asis', echo=FALSE}
