@@ -78,6 +78,7 @@ df$smoking_status <- ifelse(df$smoking_status == "Unknown", NA, df$smoking_statu
 Hemos convertido en NA todos aquellos valores de variables de observaciones no útiles.
 
 ```{r}
+library(inspectdf);
 show_plot(inspect_na(df))
 ```
 Eliminamos todas aquellas observaciones no útiles.
@@ -209,3 +210,37 @@ t.test(x = hombres,                   # Muestra 1
 
 ```
 
+#ANOVA
+Por último, vamos a comprobar si el consumo de alcohol es un factor significativo
+para la calidad del sueño. Gráficamente hemos visto que a medida que aumenta el
+consumo, la calidad es menor. 
+
+Definimos el siguiente contraste:
+
+$$ \left\{ \begin{array}{lc}
+             H_{0}: & \mu_{c_{0}} = \mu_{c_{1}} = \mu_{c_{2}} =\mu_{c_{3}} = \mu_{c_{4-5}}\\
+             H_{1}: & Diferentes
+             \end{array}
+\right. $$
+
+```{r}
+# Aplicamos ANOVA
+anova_str <- aov(bmi ~ stroke, data = df)
+summary(anova_str)
+```
+
+```{r}
+anova_hd <- aov(bmi ~ heart_disease, data = df)
+summary(anova_hd)
+```
+El criterio de rechazo es el mismo que tenemos en los contrastes de hipótesis, es decir, si el p-valor es mayor que el nivel de significación, rechazamos $H_{0}$.
+
+En este caso tenemos un p-valor grande, bajo un nivel de significación 0,05,aceptamos $H_{0}$, es decir, hay evidencias suficientes para aceptar que las medias del IMC en los diferentes grupos según los infartos y las cardiopatías sean iguales. Podemos concluir que estas medias son diferentes y por tanto, el IMC no es un factor influyente en los infartos y en las cardiopatías. 
+
+```{r}
+# Aplicamos ANOVA
+anova_gl <- aov(bmi ~ avg_glucose_level, data = df)
+summary(anova_gl)
+```
+
+En este caso tenemos un p-valor muy pequeño, bajo un nivel de significación 0,05, rechazamos $H_{0}$, es decir, no hay evidencias suficientes para aceptar que las  medias del IMC en los diferentes grupos según los niveles de glucosa sean iguales. Podemos concluir que estas medias son diferentes y por tanto, el nivel de glucosa sí es un factor influyente en IMC.
